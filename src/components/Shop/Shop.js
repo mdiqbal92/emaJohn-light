@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import fakeData from '../../fakeData';
 import './Shop.css'
 import Product from '../Product/Product'
 import Cart from '../Cart/Cart';
 import { addToDatabaseCart, getDatabaseCart } from '../../utilities/databaseManager';
 import { Link } from 'react-router-dom';
 const Shop = () => {
-    const first10 = fakeData.slice(0, 10);
-    const [products, setProducts] = useState(first10);
+    const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
+
+    useEffect(()=>{
+        fetch('https://radiant-depths-78349.herokuapp.com/products')
+        .then(res => res.json())
+        .then(data => setProducts(data))
+    })
 
     useEffect(() => {
         const savedCart = getDatabaseCart();
         const productKeys = Object.keys(savedCart);
-        const previousCart = productKeys.map(existingKey => {
-            const product = fakeData.find(pd => pd.key === existingKey);
-            product.quantity = savedCart[existingKey];
-            return product;
+        fetch('https://radiant-depths-78349.herokuapp.com/productKeys',{
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(productKeys)
         })
-        setCart(previousCart);
+        .then(res => res.json())
+        .then(data => setCart(data))
     }, []);
 
     const handleAddProduct = (product) => {

@@ -42,6 +42,8 @@ function LogIn() {
                     photo: photoURL
                 }
                 setUser(signedInUser);
+                setLoggedInUser(signedInUser);
+                history.replace(from);
             })
             .catch(err => {
                 console.log(err);
@@ -58,11 +60,21 @@ function LogIn() {
                 var token = credential.accessToken;
                 var user = result.user;
                 console.log(token, user);
+                const { displayName, email, photoURL } = result.user;
+                const signedInUser = {
+                    isSignedIn: true,
+                    name: displayName,
+                    email: email,
+                    photo: photoURL
+                }
+                setUser(signedInUser);
+                setLoggedInUser(signedInUser);
+                history.replace(from);
             }).catch((error) => {
                 const newUser = { ...user }
                 newUser.error = error.message;
                 newUser.success = false;
-                setUser(newUser);
+                
             });
     }
 
@@ -73,6 +85,16 @@ function LogIn() {
                 const user = result.user;
                 var accessToken = credential.accessToken;
                 console.log(user, accessToken)
+                const { displayName, email, photoURL } = result.user;
+                const signedInUser = {
+                    isSignedIn: true,
+                    name: displayName,
+                    email: email,
+                    photo: photoURL
+                }
+                setUser(signedInUser);
+                setLoggedInUser(signedInUser);
+                history.replace(from);
             })
             .catch((error) => {
                 const newUser = { ...user }
@@ -107,7 +129,6 @@ function LogIn() {
                     const newUser = { ...user }
                     newUser.error = '';
                     newUser.success = true;
-
                     console.log(res);
                 })
                 .catch((error) => {
